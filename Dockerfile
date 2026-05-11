@@ -1,4 +1,4 @@
-FROM nginxinc/nginx-unprivileged:alpine-slim
+FROM docker.io/nginx:1.30.0-alpine-slim
 
 COPY index.html /usr/share/nginx/html/index.html
 
