@@ -1,11 +1,10 @@
-# Usamos la imagen que ya tienes (basada en RHEL/CentOS por la estructura de carpetas)
 FROM registry.access.redhat.com/ubi8/nginx-120
 
-# El HTML debe ir en /opt/app-root/src
+# S2I espera el código en esta ruta
 COPY index.html /opt/app-root/src/index.html
 
-# El archivo de configuración debe ir en esta carpeta específica para que se cargue
-# IMPORTANTE: El archivo debe terminar en .conf
-COPY nginx.conf /opt/app-root/etc/nginx.d/proxy.conf
+# S2I busca archivos de configuración adicionales aquí
+# IMPORTANTE: El nombre del archivo debe terminar en .conf
+COPY nginx.conf /opt/app-root/etc/nginx.default.d/proxy.conf
 
-EXPOSE 8080
+# No necesitas EXPOSE ni USER, la imagen base ya los trae configurados
