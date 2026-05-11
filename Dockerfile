@@ -1,9 +1,17 @@
-FROM docker.io/nginx:1.30.0-alpine-slim
+FROM docker.io/nginxinc/nginx-unprivileged:alpine-slim
 
+# Copiamos tus archivos
 COPY index.html /usr/share/nginx/html/index.html
-
-# Sobrescribimos la configuración por defecto con la nuestra
-# En esta imagen, esta es la ruta estándar infalible
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Cambiamos a root momentáneamente para ajustar permisos de carpetas de sistema
+USER root
+
+# OpenShift usa IDs de usuario aleatorios pero que siempre pertenecen al grupo GID 0 (root)
+# Damos permisos de escritura al grupo en las carpetas que Nginx necesita
+RUN chmod -R g+w /var/cache/nginx /var/run /var/log/nginx /etc/nginx/conf.d
+
+# Volvemos al usuario sin privilegios
+USER 101
 
 EXPOSE 8080
