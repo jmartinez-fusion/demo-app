@@ -1,15 +1,11 @@
-FROM registry.access.redhat.com/ubi8/nginx-120:latest
+# Usamos la imagen que ya tienes (basada en RHEL/CentOS por la estructura de carpetas)
+FROM registry.access.redhat.com/ubi8/nginx-120
 
-# Copiamos nuestro HTML al directorio de nginx
-COPY index.html /tmp/src/index.html
+# El HTML debe ir en /opt/app-root/src
+COPY index.html /opt/app-root/src/index.html
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# El archivo de configuración debe ir en esta carpeta específica para que se cargue
+# IMPORTANTE: El archivo debe terminar en .conf
+COPY nginx.conf /opt/app-root/etc/nginx.d/proxy.conf
 
-# El builder de OpenShift ya sabe qué hacer con /tmp/src, 
-# pero para ser explícitos y universales:
-RUN cp /tmp/src/index.html /opt/app-root/src/index.html
-
-# Exponemos el puerto 8080 (Estándar non-root)
 EXPOSE 8080
-
-CMD ["nginx", "-g", "daemon off;"]
